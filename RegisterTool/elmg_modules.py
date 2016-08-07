@@ -27,11 +27,18 @@ def load_elmg_modules(path=u'modules.json'):
 
             new_module [u'registers'] = []
             for register in module [u'registers']:
-                reg=dict(register)
+                reg={}
+                reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
-                reg[u'path'] = '{}/{}/{}'.format(module[u'name'], instance, register[u'register'])
-                reg[u'min'] = '{:f}'.format(float(register[u'min'])).rstrip('0')
-                reg[u'max'] = '{:f}'.format(float(register[u'max'])).rstrip('0')
+                reg[u'path'] = '{}/{}/{}'.format(module[u'name'], instance, register[u'Sysfs file name'])
+                reg[u'min'] = float(register[u'Min'])
+                reg[u'max'] = float(register[u'Max'])
+                reg[u'read_only'] = register[u'R/W'] != 'R/W'
+                reg[u'units'] = register[u'Units']
+                reg[u'notes'] = register[u'Description']
+                reg['value'] = register[u'Default']
+                
+
                 register_paths.append(reg[u'path'])
                 new_module [u'registers'].append(reg)
             expanded_module_data.append(dict(new_module))  
@@ -44,7 +51,7 @@ def load_elmg_modules(path=u'modules.json'):
     
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    modules, module_names, register_paths = load_elmg_modules()
+    modules, module_names, register_paths = load_elmg_modules('axi_modules.json')
     pp.pprint(modules)
     pp.pprint(module_names)
     pp.pprint(register_paths)
