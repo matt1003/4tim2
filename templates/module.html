@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>{{ title }} </h1>
+     
+ <h1> Module: {{ module.name }}</h1>
+ <div id="table" class="table-editable">
+    <table class="table table-bordered">
+    <thead>
+    <tr>
+    <th> index  </td>
+    <th>Name</th>
+    <th>Value</th>
+    <th>Min</th>
+    <th>Max</th>
+    <th>Notes</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for register in registers %}
+    <tr>
+        <td> {{ loop.index }} </td>
+        <td>{{ register.name }} </td>
+        <td >
+        {% if register.read_only %}
+            {{ register.value}}
+        {% else %}
+            <form method="post" action="{{ url_for('frontend.submit', mod=register.module ) }}">
+                {{ form.csrf_token }}
+                <input type="hidden" name="register" value={{ register.path }} >
+                <input name=value type="number" value= {{ register.value}} min={{ register.min}} max={{ register.max}} step="0.0000001"> <input type="submit" value="Submit"> 
+            </form>
+        {% endif %}
+        </td>
+        <td>{{ register.min}} </td>
+        <td>{{ register.max}} </td>
+        <td>{{ register.notes}}  {{register.read_only}}</td>
+        
+
+    </tr>
+
+    {% endfor %}
+    </tbody>
+    </table> 
+   
+   
+    </div>
+    {% if module.with_commit %}
+   <form method="post" action="{{ url_for('frontend.module_commit', mod=module.name ) }}">
+    <input type="submit" value="Write Registers to FPGA" />
+</form>
+ {% endif %}
+
+{% endblock %}
+
+

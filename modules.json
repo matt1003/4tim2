@@ -1,0 +1,97 @@
+[{
+		"name": "mod1",
+		"instances":1,
+		"commit_register":"",
+		"registers": [{
+			"read_only": true,
+			"name": "Dead Time",
+			"min": 0,
+			"max": 10.24,
+			"units": "us",
+			"register_scaling": 100,
+			"notes": "Can\"t be greater than pwmperiod",
+			"register": "deadtime",
+			"value": 0.002
+		}, {
+			"read_only": false,
+			"name": "PWM Period",
+			"min": 123,
+			"max": 1e-3,
+			"units": "us",
+			"register_scaling": 1e-9,
+			"notes": "",
+			"register": "pwmperiod",
+			"value": 23
+		}]
+	}, {
+		"name": "bar",
+		"instances":2,
+		"commit_register":"commit",
+		"registers": [{
+			"read_only":true,
+			"name": "Dead Time",
+			"min": 0,
+			"max": 10.24,
+			"units": "us",
+			"register_scaling": 100,
+			"notes": "Can\"t be greater than pwmperiod",
+			"register": "deadtime",
+			"value": 0.002
+		}, {
+			"read_only": false,
+			"name": "PWM Period",
+			"min": 1e-6,
+			"max": 1e-3,
+			"units": "us",
+			"register_scaling": 1e-9,
+			"notes": "",
+			"register": "pwmperiod",
+			"value": 23
+		}, {
+			"read_only": false,
+			"name": "Foo",
+			"min": 1e-6,
+			"max": 1e-3,
+			"units": "us",
+			"register_scaling": 1e-9,
+			"notes": "",
+			"register": "foo",
+			"value": 23
+		}]},
+		{
+		"name": "foo",
+		"instances":3,
+		"commit_register":"commit",
+		"registers": [{
+			"read_only":true,
+			"name": "Dead Time",
+			"min": 0,
+			"max": 10.24,
+			"units": "us",
+			"register_scaling": 100,
+			"notes": "Can\"t be greater than pwmperiod",
+			"register": "deadtime",
+			"value": 0.002
+		}, {
+			"read_only": false,
+			"name": "PWM Period",
+			"min": 1e-6,
+			"max": 1e-3,
+			"units": "us",
+			"register_scaling": 1e-9,
+			"notes": "",
+			"register": "pwmperiod",
+			"value": 23
+		}, {
+			"read_only": false,
+			"name": "Foo",
+			"min": 1e-6,
+			"max": 1e-3,
+			"units": "us",
+			"register_scaling": 1e-9,
+			"notes": "",
+			"register": "foo",
+			"value": 23
+		}]
+
+}]
