@@ -17,7 +17,9 @@
 		"Min": "0",
 		"Max": "1",
 		"Default": 0,
-		"Units": "unitless"
+		"Step":1,
+		"Step":1,
+		"Units": "boolean"
 	}, {
 		"AXI Register Name": "alpha",
 		"Address": "+0x04",
@@ -33,6 +35,8 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
+		"Step":1,
+		"Step":1,
 		"Units": "amps"
 	}, {
 		"AXI Register Name": "beta",
@@ -49,6 +53,8 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
+		"Step":1,
+		"Step":1,
 		"Units": "amps"
 	}, {
 		"AXI Register Name": "d",
@@ -65,6 +71,8 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
+		"Step":1,
+		"Step":1,
 		"Units": "amps"
 	}, {
 		"AXI Register Name": "q",
@@ -81,6 +89,8 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
+		"Step":1,
+		"Step":1,
 		"Units": "amps"
 	}, {
 		"AXI Register Name": "phase",
@@ -97,6 +107,7 @@
 		"Min": "-3.14159",
 		"Max": "+3.14159",
 		"Default": 0,
+		"Step":1,
 		"Units": "radians"
 	}]
 }, {
@@ -120,7 +131,8 @@
 			"Min": 0,
 			"Max": 1,
 			"Default": 0,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "",
 			"Address": "",
@@ -136,7 +148,8 @@
 			"Min": 0,
 			"Max": 1,
 			"Default": 0,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "",
 			"Address": "",
@@ -152,7 +165,8 @@
 			"Min": 0,
 			"Max": 1,
 			"Default": 0,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "Kp",
 			"Address": "+0x04",
@@ -168,7 +182,8 @@
 			"Min": 0,
 			"Max": 1024,
 			"Default": 1,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "Ki",
 			"Address": "+0x08",
@@ -184,7 +199,8 @@
 			"Min": 0,
 			"Max": 1024,
 			"Default": 0,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "Kd",
 			"Address": "+0x0C",
@@ -200,7 +216,8 @@
 			"Min": 0,
 			"Max": 1024,
 			"Default": 0,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "Kr",
 			"Address": "+0x10",
@@ -216,7 +233,8 @@
 			"Min": 0,
 			"Max": 1,
 			"Default": 0.999,
-			"Units": "Unitless"
+			"Step":1,
+		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "sat_level",
 			"Address": "+0x14",
@@ -232,7 +250,8 @@
 			"Min": 0,
 			"Max": 4,
 			"Default": 3.9,
-			"Units": "amps"
+			"Step":1,
+		"Units": "amps"
 		}, {
 			"AXI Register Name": "datain",
 			"Address": "+0x18",
@@ -248,7 +267,8 @@
 			"Min": -4,
 			"Max": 4,
 			"Default": 0,
-			"Units": "amps"
+			"Step":1,
+		"Units": "amps"
 		}, {
 			"AXI Register Name": "demand",
 			"Address": "+0x1C",
@@ -264,7 +284,8 @@
 			"Min": -4,
 			"Max": 4,
 			"Default": 0,
-			"Units": "amps"
+			"Step":1,
+		"Units": "amps"
 		}, {
 			"AXI Register Name": "dataout",
 			"Address": "+0x20",
@@ -280,7 +301,8 @@
 			"Min": -4,
 			"Max": 4,
 			"Default": 0,
-			"Units": "amps"
+			"Step":1,
+		"Units": "amps"
 		}
 	]
 }]

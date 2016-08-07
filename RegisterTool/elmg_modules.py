@@ -37,7 +37,8 @@ def load_elmg_modules(path=u'modules.json'):
                 reg[u'units'] = register[u'Units']
                 reg[u'notes'] = register[u'Description']
                 reg['value'] = register[u'Default']
-                
+                reg['step'] = register[u'Step']
+                 
 
                 register_paths.append(reg[u'path'])
                 new_module [u'registers'].append(reg)

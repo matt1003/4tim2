@@ -15,14 +15,22 @@ from forms import RegistersForm
 from nav import nav
 
 frontend = Blueprint('frontend', __name__)
-modules, module_names , paths = load_elmg_modules('modules.json')
+
 pp = pprint.PrettyPrinter(indent=4)
+
+modules = None
+module_names = None
+paths = None
 
 app = None
 def setApp(app_):
     print ("Setting App")
-    app = app_;
-    pp.pprint(app.config)
+
+
+def init_module_registers(moduls_path):
+    global modules,    module_names,    paths
+    modules, module_names , paths = load_elmg_modules(moduls_path)
+    module_links() 
     
 def getProcDir():
     return '/tmp'
@@ -36,8 +44,9 @@ def readRegister(name):
                 if not line.strip():
                     print('register: %s = %s' % file_path, line)
     except (IOError, OSError):
-        return 0
+        return 0 
     return line
+
 
 def writeRegister(name, value=0):
     file_path = getProcDir() + '/' + name
@@ -63,7 +72,7 @@ def module_links():
                                 Subgroup('Modules', *links)
                                 ) 
                          )
-module_links() 
+
 
 def getModule(module_name):
     return next((l for l in modules if l['name'] == module_name), None)
@@ -74,7 +83,7 @@ def getModule(module_name):
 def index():
     return render_template('index.html')
 
-@frontend.route('/module/<string:mod>')
+@frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
     form = RegistersForm()
         
@@ -96,9 +105,20 @@ def submit(mod):
     data = request.form
     if request.method == 'POST':
         writeRegister(data['register'], data['value'])
-    pprint.pprint(data)
-    pprint.pprint(mod)
     return module(mod)
+
+
+@frontend.route('/submit_bool/<string:mod>', methods=(['GET', 'POST']))
+def submit_bool(mod):
+    data = request.form
+    if request.method == 'POST':
+        if  request.form.getlist('check') :
+            writeRegister(data['register'], 1)
+        else:  
+            writeRegister(data['register'], 0)
+    return module(mod)
+
+
 
 @frontend.route('/module_commit/<string:mod>', methods=(["POST"]))
 def module_commit(mod):

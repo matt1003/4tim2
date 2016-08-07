@@ -6,3 +6,4 @@
 #       application, one is provided for convenience.
 SECRET_KEY = 'devkey'
 PROC_DIR="/tmp"
+MODULES_PATH="modules.json"
