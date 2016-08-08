@@ -1,6 +1,6 @@
 [{
 	"name": "ABTODQ",
-	"instances": 1,
+	"instances": 3,
 	"commit_register": "Config",
 	"registers": [{
 		"AXI Register Name": "Config",
@@ -17,8 +17,7 @@
 		"Min": "0",
 		"Max": "1",
 		"Default": 0,
-		"Step":1,
-		"Step":1,
+                "Step":1,
 		"Units": "boolean"
 	}, {
 		"AXI Register Name": "alpha",
@@ -35,7 +34,6 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
-		"Step":1,
 		"Step":1,
 		"Units": "amps"
 	}, {
@@ -72,7 +70,6 @@
 		"Max": "4",
 		"Default": 0,
 		"Step":1,
-		"Step":1,
 		"Units": "amps"
 	}, {
 		"AXI Register Name": "q",
@@ -89,7 +86,6 @@
 		"Min": "-4",
 		"Max": "4",
 		"Default": 0,
-		"Step":1,
 		"Step":1,
 		"Units": "amps"
 	}, {
@@ -112,7 +108,7 @@
 	}]
 }, {
 	"name": "PWRARW",
-	"instances": 1,
+	"instances": 3,
 	"commit_register": "Config",
 	"registers": [
 
@@ -175,6 +171,7 @@
 			"Register Format": "25Q12 Signed Fixed Point",
 			"Sysfs": "Y",
 			"Cached?": "Y",
+			"Cache write sysfs register": "go",
 			"Sysfs Format": "Fixed point string",
 			"R/W": "R/W",
 			"English Name": "Proportional gain",

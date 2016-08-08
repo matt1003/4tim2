@@ -36,8 +36,8 @@ def init_module_registers(moduls_path):
     module_links()
 
 def getProcDir():
-    if 'PROC_DIR' in app.config:
-        return app.config['PROC_DIR']
+#    if 'PROC_DIR' in app.config:
+#        return app.config['PROC_DIR']
     return "/tmp"
 
 
@@ -65,6 +65,7 @@ def commitRegisters(name):
     with open(file_path, 'w+') as f:
         f.write(str(0))
         f.write(str(1))
+        f.write(str(0))
 
 
 def module_links():

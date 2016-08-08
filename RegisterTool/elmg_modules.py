@@ -30,7 +30,7 @@ def load_elmg_modules(path=u'modules.json'):
                 reg={}
                 reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
-                reg[u'path'] = '{}/{}/{}'.format(module[u'name'], instance, register[u'Sysfs file name'])
+                reg[u'path'] = '{}_{}/{}'.format(module[u'name'], instance, register[u'Sysfs file name'])
                 reg[u'min'] = float(register[u'Min'])
                 reg[u'max'] = float(register[u'Max'])
                 reg[u'read_only'] = register[u'R/W'] != 'R/W'
@@ -52,7 +52,7 @@ def load_elmg_modules(path=u'modules.json'):
     
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    modules, module_names, register_paths = load_elmg_modules('axi_modules.json')
+    modules, module_names, register_paths = load_elmg_modules('../modules.json')
     pp.pprint(modules)
     pp.pprint(module_names)
     pp.pprint(register_paths)
