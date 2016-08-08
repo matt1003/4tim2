@@ -5,6 +5,8 @@
      
  <h1> Module: {{ module.name }}</h1>
  <div id="table" class="table-editable">
+    <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}">
+                    {{ form.csrf_token }}
     <table class="table table-bordered">
     <thead>
     <tr>
@@ -23,29 +25,22 @@
         <td> {{ loop.index }} </td>
         <td>{{ register.name }} </td>
         <td >
-          <form method="post" action="{{ url_for('frontend.submit', mod=register.module ) }}">
-        {% if register.data_type == "bool" %}
+        {% if register.data_type == "zzzzbool" %}
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
              
-                {{ form.csrf_token }}
-                <input type="hidden" name="register" value={{ register.path }} >
                 {% if register.value == "0" %}
-                    <input type="checkbox" name="check"  value="state"  > 
+                    <input type="checkbox" name={{register.path}}  value="{{ register.value }}"  > 
                 {% else %}
-                    <input type="checkbox" name="check"  value="state" checked > 
+                    <input type="checkbox" name={{register.path}}  value="{{ register.value }}" checked > 
                 {% endif %}   
-                <input type="submit" value="Submit">
             {% endif %}
         {% else %}
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
-                    {{ form.csrf_token }}
-                    <input type="hidden" name="register" value={{ register.path }} >
-                    <input name=value type="number" value= {{ register.value }} min={{ register.min }} max={{ register.max}} step= {{register.step}} > 
-                    <input type="submit" value="Submit"> 
+                <input name="{{register.path}}" type="number" value="{{ register.value }}" min="{{ register.min }}" max="{{ register.max }}" step= "{{ register.step }}" > 
             {% endif %}
         {% endif %}
         </td>
@@ -54,22 +49,18 @@
         <td>{{ register.max}} </td>
         <td>{{ register.notes}}  {{register.read_only}}</td>
     </tr>
-    </form>
+
 
     {% endfor %}
     </tbody>
     </table> 
-   
-   
-    </div>
-    {% if module.with_commit %}
-   <form method="post" action="{{ url_for('frontend.module_commit', mod=module.name ) }}">
-    <input type="submit" value="Write Registers to FPGA" />
-</form>
-   <form method="get" action="{{ url_for('frontend.module', mod=module.name ) }}">
+    <input type="submit" value="submit" />
+       <form method="get" action="{{ url_for('frontend.module', mod=module.name ) }}">
     <input type="submit" value="Refresh" />
 </form>
- {% endif %}
+    </form>   
+   
+    </div> 
 
 {% endblock %}
 

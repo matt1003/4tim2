@@ -12,7 +12,7 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
     module_data = json.load(json_data)
     module_names = []
     expanded_module_data = []
-    register_paths = []
+    register_paths = {}
     address_map = {}
     
     with open(addresses_path, u'rb') as csvfile:
@@ -52,7 +52,7 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
                 reg[u'step'] = register[u'Step']
                 reg[u'data_type'] = data_type_map[register[u'Sysfs Format']]
 
-                register_paths.append(reg[u'path'])
+                register_paths[reg[u'path']] = reg
                 new_module [u'registers'].append(reg)
             expanded_module_data.append(dict(new_module))  
             
@@ -69,9 +69,9 @@ if __name__ == '__main__':
     pp.pprint(module_names)
     pp.pprint(register_paths)
     
-    for (path) in register_paths:
+    for (path) in register_paths.keys():
    
-        path = os.path.join(app.config['PROC_DIR'], path)
+        path = os.path.join('/tmp', path)
         print ('Path %s' % path)
         directory = os.path.dirname(path)
         try: 

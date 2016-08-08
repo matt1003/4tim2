@@ -20,7 +20,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 modules = None
 module_names = None
-paths = None
+register_paths = None
 
 
 app = None
@@ -31,8 +31,8 @@ def setApp(app_):
 
 
 def initModuleRegisters():
-    global modules, module_names, paths
-    modules, module_names , paths = load_elmg_modules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
+    global modules, module_names, register_paths
+    modules, module_names , register_paths = load_elmg_modules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
     module_links()
 
 def getProcDir():
@@ -54,13 +54,18 @@ def readRegister(name):
 
 
 def writeRegister(name, value=0):
-    file_path = getProcDir() + '/' + name
-    try:
+    
+    if name in register_paths:
+        file_path = getProcDir() + '/' + name
+        
         print("write %s %s" % (file_path, value))
-        with open(file_path, 'w+') as f:
-            f.write(str(value))
-    except (IOError, OSError) as e:
-        print("ERROR: Failed to write to %s %s" % (file_path, e))
+        try:
+            print("write %s %s" % (file_path, value))
+            with open(file_path, 'w+') as f:
+                f.write(str(value))
+        except (IOError, OSError) as e:
+            print("ERROR: Failed to write to %s %s" % (file_path, e))
+            pass
 
 def commitRegisters(name):
     file_path = getProcDir() + '/' + name
@@ -112,8 +117,13 @@ def module(mod):
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
     data = request.form
+    value = -1
+    pp.pprint(data)
+  
     if request.method == 'POST':
-        writeRegister(data['register'], data['value'])
+        for register in data:
+            print('register %s ,value %s' %(register,data[register]))
+            writeRegister(register, data[register])
     return module(mod)
 
 
