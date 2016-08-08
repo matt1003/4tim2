@@ -4,7 +4,7 @@ import os
 import csv
 from pip._vendor.requests.utils import address_in_network
 
-
+data_type_map = {u'Integer':u'int',u'Binary':u'bool', u'Fixed point string':u'float'}
 
 
 def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.csv'):
@@ -15,7 +15,7 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
     register_paths = []
     address_map = {}
     
-    with open(addresses_path, 'rb') as csvfile:
+    with open(addresses_path, u'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             address_map[str(row[1])] = row[0]
@@ -29,8 +29,8 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
             new_module = {}
             new_module[u'name'] = new_module_name
             new_module[u'instance'] = instance
-            if module['commit_register'] == "":
-                new_module[u'commit_register'] = ""
+            if module[u'commit_register'] == '':
+                new_module[u'commit_register'] = ''
             else:
                 new_module[u'commit_register'] = '{}/{}/{}'.format(module[u'name'], instance, module[u'commit_register'])
           
@@ -45,11 +45,12 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
                 reg[u'path'] = '{}/{}'.format(sysfs_module_name, register[u'Sysfs file name'])
                 reg[u'min'] = float(register[u'Min'])
                 reg[u'max'] = float(register[u'Max'])
-                reg[u'read_only'] = register[u'R/W'] != 'R/W'
+                reg[u'read_only'] = register[u'R/W'] != u'R/W'
                 reg[u'units'] = register[u'Units']
                 reg[u'notes'] = register[u'Description']
-                reg['value'] = register[u'Default']
-                reg['step'] = register[u'Step']
+                reg[u'value'] = register[u'Default']
+                reg[u'step'] = register[u'Step']
+                reg[u'data_type'] = data_type_map[register[u'Sysfs Format']]
                  
 
                 register_paths.append(reg[u'path'])
@@ -64,15 +65,15 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
     
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    modules, module_names, register_paths = load_elmg_modules('modules.json','addresses.csv')
+    modules, module_names, register_paths = load_elmg_modules(u'modules.json',u'addresses.csv')
     pp.pprint(modules)
     pp.pprint(module_names)
     pp.pprint(register_paths)
     
     for (path) in register_paths:
    
-        path = os.path.join('/tmp', path)
-        print ("Path %s" % path)
+        path = os.path.join(app.config['PROC_DIR'], path)
+        print ('Path %s' % path)
         directory = os.path.dirname(path)
         try: 
             os.makedirs(directory)
