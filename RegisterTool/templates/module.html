@@ -23,11 +23,12 @@
         <td> {{ loop.index }} </td>
         <td>{{ register.name }} </td>
         <td >
+          <form method="post" action="{{ url_for('frontend.submit', mod=register.module ) }}">
         {% if register.data_type == "bool" %}
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
-                <form method="post" action="{{ url_for('frontend.submit_bool', mod=register.module ) }}">
+             
                 {{ form.csrf_token }}
                 <input type="hidden" name="register" value={{ register.path }} >
                 {% if register.value == "0" %}
@@ -36,18 +37,15 @@
                     <input type="checkbox" name="check"  value="state" checked > 
                 {% endif %}   
                 <input type="submit" value="Submit">
-                </form>
             {% endif %}
         {% else %}
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
-                <form method="post" action="{{ url_for('frontend.submit', mod=register.module ) }}">
                     {{ form.csrf_token }}
                     <input type="hidden" name="register" value={{ register.path }} >
                     <input name=value type="number" value= {{ register.value }} min={{ register.min }} max={{ register.max}} step= {{register.step}} > 
                     <input type="submit" value="Submit"> 
-                </form>
             {% endif %}
         {% endif %}
         </td>
@@ -56,6 +54,7 @@
         <td>{{ register.max}} </td>
         <td>{{ register.notes}}  {{register.read_only}}</td>
     </tr>
+    </form>
 
     {% endfor %}
     </tbody>

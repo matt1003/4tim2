@@ -51,7 +51,6 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
                 reg[u'value'] = register[u'Default']
                 reg[u'step'] = register[u'Step']
                 reg[u'data_type'] = data_type_map[register[u'Sysfs Format']]
-                 
 
                 register_paths.append(reg[u'path'])
                 new_module [u'registers'].append(reg)
