@@ -7,4 +7,4 @@
 SECRET_KEY = 'devkey'
 PROC_DIR="/tmp"
 MODULES_PATH="modules.json"
-ADDRESS_PATH="addresses.csv"
+ADDRESSES_PATH="addresses.csv"

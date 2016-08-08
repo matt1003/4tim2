@@ -5,7 +5,7 @@
 # You can find out more about blueprints at
 # http://flask.pocoo.org/docs/blueprints/
 
-from flask import Blueprint, render_template,  request
+from flask import Blueprint, render_template, request
 from flask_nav.elements import Navbar, View, Subgroup, Link
 import pprint
 
@@ -30,14 +30,14 @@ def setApp(app_):
     app = app_
 
 
-def init_module_registers(moduls_path):
-    global modules,    module_names,    paths
-    modules, module_names , paths = load_elmg_modules(moduls_path)
+def initModuleRegisters():
+    global modules, module_names, paths
+    modules, module_names , paths = load_elmg_modules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
     module_links()
 
 def getProcDir():
-#    if 'PROC_DIR' in app.config:
-#        return app.config['PROC_DIR']
+    if 'PROC_DIR' in app.config:
+        return app.config['PROC_DIR']
     return "/tmp"
 
 
@@ -55,9 +55,12 @@ def readRegister(name):
 
 def writeRegister(name, value=0):
     file_path = getProcDir() + '/' + name
-    print("write %s %s" % (file_path, value))
-    with open(file_path, 'w+') as f:
-        f.write(str(value))
+    try:
+        print("write %s %s" % (file_path, value))
+        with open(file_path, 'w+') as f:
+            f.write(str(value))
+    except (IOError, OSError) as e:
+        print("ERROR: Failed to write to %s %s" % (file_path, e))
 
 def commitRegisters(name):
     file_path = getProcDir() + '/' + name

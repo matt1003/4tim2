@@ -18,7 +18,7 @@ from flask_appconfig import AppConfig
 from flask_bootstrap import Bootstrap
 
 from nav import nav
-from frontend import frontend, setApp, init_module_registers
+from frontend import frontend, setApp, initModuleRegisters
 
 def create_app(configfile=None):
     # We are using the "Application Factory"-pattern here, which is described
@@ -43,8 +43,10 @@ def create_app(configfile=None):
     # Because we're security-conscious developers, we also hard-code disabling
     # the CDN support (this might become a default in later versions):
     
-    init_module_registers(app.config['MODULES_PATH'])
+  
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
+    setApp(app)
+    initModuleRegisters()
 
     # We initialize the navigation as well
     nav.init_app(app)
@@ -55,7 +57,6 @@ if __name__ == "__main__":
     app = create_app()
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-    setApp(app)
-
+  
     app.run(debug=True)
 

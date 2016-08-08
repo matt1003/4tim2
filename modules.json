@@ -1,6 +1,6 @@
 [{
-	"name": "ABTODQ",
-	"instances": 3,
+	"name": "ABTODQ_AXI",
+	"instances": 1,
 	"commit_register": "Config",
 	"registers": [{
 		"AXI Register Name": "Config",
@@ -107,8 +107,8 @@
 		"Units": "radians"
 	}]
 }, {
-	"name": "PWRARW",
-	"instances": 3,
+	"name": "PIWARW_AXI",
+	"instances": 2,
 	"commit_register": "Config",
 	"registers": [
 

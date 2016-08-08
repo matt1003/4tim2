@@ -1,14 +1,24 @@
 import pprint
 import json
 import os
+import csv
+from pip._vendor.requests.utils import address_in_network
 
 
-def load_elmg_modules(path=u'modules.json'):
-    json_data = open(path)
+
+
+def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.csv'):
+    json_data = open(modules_path)
     module_data = json.load(json_data)
     module_names = []
     expanded_module_data = []
     register_paths = []
+    address_map = {}
+    
+    with open(addresses_path, 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in spamreader:
+            address_map[str(row[1])] = row[0]
     
     for module in module_data:
         for instance in range(module[u'instances']):
@@ -28,9 +38,11 @@ def load_elmg_modules(path=u'modules.json'):
             new_module [u'registers'] = []
             for register in module [u'registers']:
                 reg={}
+                mod_name = '{}_{}'.format(module[u'name'],instance)
+                sysfs_module_name = '{}.{}'.format(address_map[mod_name],mod_name)
                 reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
-                reg[u'path'] = '{}_{}/{}'.format(module[u'name'], instance, register[u'Sysfs file name'])
+                reg[u'path'] = '{}/{}'.format(sysfs_module_name, register[u'Sysfs file name'])
                 reg[u'min'] = float(register[u'Min'])
                 reg[u'max'] = float(register[u'Max'])
                 reg[u'read_only'] = register[u'R/W'] != 'R/W'
@@ -52,7 +64,7 @@ def load_elmg_modules(path=u'modules.json'):
     
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    modules, module_names, register_paths = load_elmg_modules('../modules.json')
+    modules, module_names, register_paths = load_elmg_modules('modules.json','addresses.csv')
     pp.pprint(modules)
     pp.pprint(module_names)
     pp.pprint(register_paths)
