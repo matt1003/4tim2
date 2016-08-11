@@ -7,4 +7,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
     setApp(app)
-    app.run(host='0.0.0.0')
+    app.run(debug=1,host='0.0.0.0')

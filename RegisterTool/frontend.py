@@ -57,8 +57,6 @@ def writeRegister(name, value=0):
     
     if name in register_paths:
         file_path = getProcDir() + '/' + name
-        
-        print("write %s %s" % (file_path, value))
         try:
             print("write %s %s" % (file_path, value))
             with open(file_path, 'w+') as f:
@@ -105,36 +103,30 @@ def module(mod):
 
     for reg in module_data['registers']:
         reg['value'] = readRegister(reg['path'])
-    with_commit = not module_data['commit_register'] == ""
 
     return render_template('module.html',
 
-                           module={'name':module_data['name'],
-                           'with_commit':with_commit},
+                           module={'name':module_data['name']},
                            registers=module_data['registers'], form=form)
 
+def isCacheRegister(register_path):
+    if register_path in register_paths:
+        return register_paths[register_path][u'cache_register']
+    return False
 
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
     data = request.form
     value = -1
-    pp.pprint(data)
-  
     if request.method == 'POST':
-        for register in data:
-            print('register %s ,value %s' %(register,data[register]))
-            writeRegister(register, data[register])
-    return module(mod)
-
-
-@frontend.route('/submit_bool/<string:mod>', methods=(['GET', 'POST']))
-def submit_bool(mod):
-    data = request.form
-    if request.method == 'POST':
-        if  request.form.getlist('check') :
-            writeRegister(data['register'], 1)
-        else:
-            writeRegister(data['register'], 0)
+        # write the data to the registers.
+        for register_path in data:
+            if not isCacheRegister(register_path):
+                writeRegister(register_path, data[register_path])
+        # now write to the cache commit registers.
+        for register_path in data:
+             if isCacheRegister(register_path):
+                commitRegisters(register_path)
     return module(mod)
 
 

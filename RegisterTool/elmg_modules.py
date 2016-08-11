@@ -29,12 +29,6 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
             new_module = {}
             new_module[u'name'] = new_module_name
             new_module[u'instance'] = instance
-            if module[u'commit_register'] == '':
-                new_module[u'commit_register'] = ''
-            else:
-                new_module[u'commit_register'] = '{}/{}/{}'.format(module[u'name'], instance, module[u'commit_register'])
-          
-
             new_module [u'registers'] = []
             for register in module [u'registers']:
                 reg={}
@@ -43,6 +37,11 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
                 reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
                 reg[u'path'] = '{}/{}'.format(sysfs_module_name, register[u'Sysfs file name'])
+                if register[u'Cache write sysfs register'] :
+                    reg[u'cache_write_register'] = '{}/{}'.format(sysfs_module_name, register[u'Cache write sysfs register'])
+                else:
+                    reg[u'cache_write_register'] = '' 
+                reg[u'cache_register'] = False
                 reg[u'min'] = float(register[u'Min'])
                 reg[u'max'] = float(register[u'Max'])
                 reg[u'read_only'] = register[u'R/W'] != u'R/W'
@@ -55,7 +54,9 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
                 register_paths[reg[u'path']] = reg
                 new_module [u'registers'].append(reg)
             expanded_module_data.append(dict(new_module))  
-            
+            for key, reg in register_paths.iteritems():
+                if  reg[u'cache_write_register']:
+                    register_paths[reg[u'cache_write_register']][u'cache_register'] = True
     return expanded_module_data, module_names, register_paths
     
     
