@@ -7,7 +7,7 @@ from pip._vendor.requests.utils import address_in_network
 data_type_map = {u'Integer':u'int',u'Binary':u'bool', u'Fixed point string':u'float'}
 
 
-def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.csv'):
+def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv'):
     json_data = open(modules_path)
     module_data = json.load(json_data)
     module_names = []
@@ -60,7 +60,7 @@ def load_elmg_modules(modules_path=u'modules.json', addresses_path=u'addresses.c
     return expanded_module_data, module_names, register_paths
     
     
-    
+
     
     
 if __name__ == '__main__':
@@ -70,18 +70,7 @@ if __name__ == '__main__':
     pp.pprint(module_names)
     pp.pprint(register_paths)
     
-    for (path) in register_paths.keys():
-   
-        path = os.path.join('/tmp', path)
-        print ('Path %s' % path)
-        directory = os.path.dirname(path)
-        try: 
-            os.makedirs(directory)
-        except OSError:
-            if not os.path.isdir(directory):
-                raise
-        with open(path, 'w+') as f:
-            f.write(str('0.0'))
+    createTempFilesytem()
     
     
     

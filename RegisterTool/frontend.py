@@ -8,8 +8,9 @@
 from flask import Blueprint, render_template, request
 from flask_nav.elements import Navbar, View, Subgroup, Link
 import pprint
+import os
 
-from elmg_modules import load_elmg_modules
+from elmgModules import loadElmgModules
 
 from forms import RegistersForm
 from nav import nav
@@ -32,7 +33,7 @@ def setApp(app_):
 
 def initModuleRegisters():
     global modules, module_names, register_paths
-    modules, module_names , register_paths = load_elmg_modules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
+    modules, module_names , register_paths = loadElmgModules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
     module_links()
 
 def getProcDir():
@@ -105,7 +106,6 @@ def module(mod):
         reg['value'] = readRegister(reg['path'])
 
     return render_template('module.html',
-
                            module={'name':module_data['name']},
                            registers=module_data['registers'], form=form)
 
@@ -131,8 +131,19 @@ def submit(mod):
 
 
 
-@frontend.route('/module_commit/<string:mod>', methods=(["POST"]))
-def module_commit(mod):
-    module_data = getModule(mod)
-    commitRegisters(module_data['commit_register'])
-    return module(mod)
+    
+def createTempFilesytem():
+    for path, reg in register_paths.iteritems():
+   
+        file_path = os.path.join('/tmp', path)
+    
+        directory = os.path.dirname(file_path)
+        try: 
+            os.makedirs(directory)
+        except OSError:
+            if not os.path.isdir(directory):
+                raise
+        if not os.path.isfile(file_path):
+            with open(file_path, 'w+') as f:
+                print ('Creating temp register path %s with default value of %s' % (file_path,reg['value']))
+                f.write(str(reg['value']))

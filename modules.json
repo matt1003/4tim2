@@ -240,7 +240,7 @@
 			"Min": 0,
 			"Max": 1,
 			"Default": 0.999,
-			"Step":1,
+			"Step":0.001,
 		"Units": "Unitless"
 		}, {
 			"AXI Register Name": "sat_level",
@@ -276,7 +276,7 @@
 			"Min": -4,
 			"Max": 4,
 			"Default": 0,
-			"Step":1,
+			"Step":0.1,
 		"Units": "amps"
 		}, {
 			"AXI Register Name": "demand",
