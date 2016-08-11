@@ -1,4 +1,4 @@
  #!/bin/bash
 export FLASK_APP=RegisterTool
 export FLASK_DEBUG=1
-flask/bin/flask
+flask/bin/flask 
