@@ -33,7 +33,7 @@ def setApp(app_):
 
 def initModuleRegisters():
     global modules, module_names, register_paths
-    modules, module_names , register_paths = loadElmgModules(app.config['MODULES_PATH'],app.config['ADDRESSES_PATH'])
+    modules, module_names , register_paths = loadElmgModules(app.config['MODULES_PATH'], app.config['ADDRESSES_PATH'])
     module_links()
 
 def getProcDir():
@@ -43,6 +43,9 @@ def getProcDir():
 
 
 def readRegister(name):
+    if isCacheRegister(name):
+        # we can't read the cache registers, they are write only.
+        return 0
     file_path = getProcDir() + '/' + name
     try:
         with open(file_path, 'r') as f:
@@ -55,7 +58,9 @@ def readRegister(name):
 
 
 def writeRegister(name, value=0):
-    
+    if isCacheRegister(name):
+        # we can't write the cache registers like this we must use, commitRegisters()
+        commitRegisters (name)
     if name in register_paths:
         file_path = getProcDir() + '/' + name
         try:
@@ -99,7 +104,6 @@ def index():
 @frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
     form = RegistersForm()
-
     module_data = getModule(mod)
 
     for reg in module_data['registers']:
@@ -117,7 +121,6 @@ def isCacheRegister(register_path):
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
     data = request.form
-    value = -1
     if request.method == 'POST':
         # write the data to the registers.
         for register_path in data:
@@ -125,25 +128,23 @@ def submit(mod):
                 writeRegister(register_path, data[register_path])
         # now write to the cache commit registers.
         for register_path in data:
-             if isCacheRegister(register_path):
+            if isCacheRegister(register_path):
                 commitRegisters(register_path)
     return module(mod)
 
 
 
-    
+
 def createTempFilesytem():
     for path, reg in register_paths.iteritems():
-   
         file_path = os.path.join('/tmp', path)
-    
         directory = os.path.dirname(file_path)
-        try: 
+        try:
             os.makedirs(directory)
         except OSError:
             if not os.path.isdir(directory):
                 raise
         if not os.path.isfile(file_path):
             with open(file_path, 'w+') as f:
-                print ('Creating temp register path %s with default value of %s' % (file_path,reg['value']))
+                print ('Creating temp register path %s with default value of %s' % (file_path, reg['value']))
                 f.write(str(reg['value']))
