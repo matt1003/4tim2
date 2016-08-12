@@ -65,7 +65,7 @@ def writeRegister(name, value=0):
         file_path = getProcDir() + '/' + name
         try:
             print("write %s %s" % (file_path, value))
-            with open(file_path, 'w+') as f:
+            with open(file_path, 'w') as f:
                 f.write(str(value))
         except (IOError, OSError) as e:
             print("ERROR: Failed to write to %s %s" % (file_path, e))
@@ -74,7 +74,7 @@ def writeRegister(name, value=0):
 def commitRegisters(name):
     file_path = getProcDir() + '/' + name
     print("commitRegisters %s" % (file_path))
-    with open(file_path, 'w+') as f:
+    with open(file_path, 'w') as f:
         f.write(str(0))
         f.write(str(1))
         f.write(str(0))
