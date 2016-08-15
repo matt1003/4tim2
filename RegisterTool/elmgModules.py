@@ -2,6 +2,7 @@ import pprint
 import json
 import os
 import csv
+import string
 from pip._vendor.requests.utils import address_in_network
 
 data_type_map = {u'Integer':u'int',u'Binary':u'bool', u'Fixed point string':u'float'}
@@ -14,11 +15,13 @@ def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv
     expanded_module_data = []
     register_paths = {}
     address_map = {}
+    type_map = {}
     
     with open(addresses_path, u'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in spamreader:
             address_map[str(row[1])] = row[0]
+            type_map[str(row[1])] = row[2]
     
     for module in module_data:
         for instance in range(module[u'instances']):
@@ -33,12 +36,12 @@ def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv
             for register in module [u'registers']:
                 reg={}
                 mod_name = '{}_{}'.format(module[u'name'],instance)
-                sysfs_module_name = '{}.{}'.format(address_map[mod_name],mod_name)
+                sysfs_module_name = '{}.{}'.format(string.lower(address_map[mod_name]),type_map[mod_name])
                 reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
-                reg[u'path'] = '{}/{}'.format(sysfs_module_name, register[u'Sysfs file name'])
+                reg[u'path'] = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Sysfs file name']))
                 if register[u'Cache write sysfs register'] :
-                    reg[u'cache_write_register'] = '{}/{}'.format(sysfs_module_name, register[u'Cache write sysfs register'])
+                    reg[u'cache_write_register'] = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Cache write sysfs register']))
                 else:
                     reg[u'cache_write_register'] = '' 
                 reg[u'cache_register'] = False

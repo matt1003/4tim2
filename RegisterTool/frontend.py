@@ -45,17 +45,22 @@ def getProcDir():
 def readRegister(name):
     if isCacheRegister(name):
         # we can't read the cache registers, they are write only.
+        print('cache register: %s ' % name)
         return 0
     file_path = getProcDir() + '/' + name
+    value = '0.0'
     try:
         with open(file_path, 'r') as f:
             for line in f:
-                if not line.strip():
-                    print('register: %s = %s' % file_path, line)
+                if line.strip():
+                   value = line.strip()
+                   print('register: %s = %s' % (file_path, value))
+                   break
+                print('$$$ register:  %s' %  file_path)
     except (IOError, OSError):
-        return 0
-    return line
-
+        print('error reading register: %s ' % file_path)
+        return '0'
+    return value
 
 def writeRegister(name, value=0):
     if isCacheRegister(name):
@@ -75,9 +80,7 @@ def commitRegisters(name):
     file_path = getProcDir() + '/' + name
     print("commitRegisters %s" % (file_path))
     with open(file_path, 'w') as f:
-        f.write(str(0))
         f.write(str(1))
-        f.write(str(0))
 
 
 def module_links():

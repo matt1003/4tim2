@@ -38,7 +38,7 @@
         <td>{{ register.units}} </td>
         <td>{{ register.min}} </td>
         <td>{{ register.max}} </td>
-        <td>{{ register.notes}}  {{register.read_only}}</td>
+        <td>{{ register.notes}}</td>
     	</tr>
             {% endif %}
 
@@ -47,9 +47,10 @@
     </tbody>
     </table> 
     <input type="submit" value="Submit" />
+</form>
        <form method="get" action="{{ url_for('frontend.module', mod=module.name ) }}">
     <input type="submit" value="Refresh" />
-</form>
+
     </form>   
    
     </div> 

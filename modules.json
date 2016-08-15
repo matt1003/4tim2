@@ -5,7 +5,7 @@
 		"AXI Register Name": "Config",
 		"Address": "0x00",
 		"Bit(s)": "0",
-		"Sysfs file name": "enable",
+		"Sysfs file name": "go",
 		"Register Format": "Bit",
 		"Sysfs": "Y",
 		"Cached?": "N",
@@ -96,7 +96,7 @@
 		"AXI Register Name": "phase",
 		"Address": "+0x14",
 		"Bit(s)": "17:0",
-		"Sysfs file name": "phase",
+		"Sysfs file name": "phase_in",
 		"Register Format": "18Q15 Signed Fixed Point",
 		"Sysfs": "Y",
 		"Cached?": "N",
@@ -258,7 +258,7 @@
 			"Min": 0,
 			"Max": 4,
 			"Default": 3.9,
-			"Step":1,
+			"Step":0.00001,
 		"Units": "amps"
 		}, {
 			"AXI Register Name": "datain",
