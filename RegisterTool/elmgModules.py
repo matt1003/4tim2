@@ -39,6 +39,7 @@ def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv
                 sysfs_module_name = '{}.{}'.format(string.lower(address_map[mod_name]),type_map[mod_name])
                 reg[u'name'] = register[u'English Name']
                 reg[u'module'] = str(new_module_name)
+                reg[u'id'] = '{}_{}'.format(type_map[mod_name], string.lower(register[u'Sysfs file name']))
                 reg[u'path'] = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Sysfs file name']))
                 if register[u'Cache write sysfs register'] :
                     reg[u'cache_write_register'] = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Cache write sysfs register']))
