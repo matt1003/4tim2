@@ -123,9 +123,10 @@ def isCacheRegister(register_path):
 
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
-    data = request.form
-    if request.method == 'POST':
+    pp.pprint(request.form)
+    if request.method == 'POST' and request.form['submit'] == 'Submit':
         # write the data to the registers.
+        data = request.form
         for register_path in data:
             if not isCacheRegister(register_path):
                 writeRegister(register_path, data[register_path])
