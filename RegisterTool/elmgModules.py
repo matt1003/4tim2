@@ -83,7 +83,6 @@ if __name__ == '__main__':
     pp.pprint(module_names)
     pp.pprint(register_paths)
     
-    createTempFilesytem()
     
     
     

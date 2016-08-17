@@ -9,6 +9,9 @@ from flask import Blueprint, render_template, request
 from flask_nav.elements import Navbar, View, Subgroup, Link
 import pprint
 import os
+import json
+import time
+
 
 from elmgModules import loadElmgModules
 
@@ -24,6 +27,10 @@ module_names = None
 register_paths = None
 
 
+def getRegisterPaths():
+    global register_paths
+    return register_paths
+
 app = None
 def setApp(app_):
     print ("Setting App")
@@ -32,12 +39,15 @@ def setApp(app_):
 
 
 def initModuleRegisters():
-    global modules, module_names, register_paths
-    modules, module_names , register_paths = loadElmgModules(app.config['MODULES_PATH'], app.config['ADDRESSES_PATH'])
+    loadRegisters(app.config['MODULES_PATH'], app.config['ADDRESSES_PATH'])
     module_links()
+    
+def loadRegisters(modules_path,addresses_path):
+    global modules, module_names, register_paths
+    modules, module_names , register_paths = loadElmgModules(modules_path,addresses_path)
 
 def getProcDir():
-    if 'PROC_DIR' in app.config:
+    if  app and 'PROC_DIR' in app.config:
         return app.config['PROC_DIR']
     return "/tmp"
 
@@ -66,7 +76,7 @@ def writeRegister(name, value=0):
     if isCacheRegister(name):
         # we can't write the cache registers like this we must use, commitRegisters()
         commitRegisters (name)
-    if name in register_paths:
+    if validateRegister(name,value):
         file_path = getProcDir() + '/' + name
         try:
             print("write %s %s" % (file_path, value))
@@ -90,6 +100,7 @@ def module_links():
     nav.register_element('frontend_top',
                          Navbar(
                                 View('Home', '.index'),
+                                View('File', 'frontend.file'),
                                 Subgroup('Modules', *links)
                                 )
                          )
@@ -103,6 +114,24 @@ def getModule(module_name):
 @frontend.route('/')
 def index():
     return render_template('index.html')
+
+
+
+    
+@frontend.route('/file/', methods=(['GET']))
+def file():  
+    return render_template('file.html')
+
+@frontend.route('/submit_file/', methods=(['GET', 'POST']))
+def submit_file():
+    pp.pprint(request.form)
+    if request.method == 'POST':
+        if  request.form['action'] == 'Save':
+            save(app.config['DATA_FILE'])
+        if  request.form['action'] == 'Restore':
+            load(app.config['DATA_FILE'])
+    
+    return render_template('file.html')
 
 @frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
@@ -121,6 +150,19 @@ def isCacheRegister(register_path):
         return register_paths[register_path][u'cache_register']
     return False
 
+def isReadOnlyRegister(register_path):
+    if register_path in register_paths:
+        return register_paths[register_path][u'read_only']
+    return True
+
+def validateRegister(register_path, value):
+    if register_path in register_paths:
+        if float(value) >= float(register_paths[register_path][u'min']) and float(value) <= float(register_paths[register_path][u'max']):
+            return True
+        print("Value out of range %s:%s (%s - %s)"%(register_path,value, register_paths[register_path][u'min'], register_paths[register_path][u'max']) ) 
+    return False
+     
+    
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
     pp.pprint(request.form)
@@ -152,3 +194,33 @@ def createTempFilesytem():
             with open(file_path, 'w+') as f:
                 print ('Creating temp register path %s with default value of %s' % (file_path, reg['value']))
                 f.write(str(reg['value']))
+                
+
+def save(file_path = "/tmp/data.elmg"):
+    values = {}
+    values[u'version']="1.0.0"
+    values[u'raw_time']=  time.time()
+    values[u'date']=time.asctime( time.localtime(time.time()) )
+    for path, reg in getRegisterPaths().iteritems():
+        values[path] = readRegister(path)
+    with open(file_path, 'w') as outfile:
+        json.dump(values, outfile,  sort_keys=True,indent=4, separators=(',', ': '))
+
+def load(file_path = "/tmp/data.elmg"):
+    json_data = open(file_path)
+    values = json.load(json_data)
+    for path, value in values.iteritems():
+        if not isReadOnlyRegister(path) and not isCacheRegister(path):
+            writeRegister(path,value)
+
+    #Write all the cache registers.
+    for path, value in values.iteritems():
+        if  isCacheRegister(path):
+            writeRegister(path,value)
+            
+if __name__ == '__main__':
+    pp = pprint.PrettyPrinter(indent=4)
+    loadRegisters("modules.json","addresses.csv")
+    createTempFilesytem()
+    save('/tmp/data.elmg')
+    load('/tmp/data.elmg')

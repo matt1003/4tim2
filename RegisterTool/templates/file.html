@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+
+<div id="fileForm" class="table-editable">
+	<form method="post" action="{{ url_for('frontend.submit_file' ) }}">
+	
+		<input type="submit" name="action" value="Save" />
+		<input type="submit" name="action" value="Restore" />
+	</form>
+</div>
+
+{% endblock %}
+
+
