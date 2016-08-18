@@ -41,7 +41,7 @@ def setApp(app_):
 def initModuleRegisters():
     loadRegisters(app.config['MODULES_PATH'], app.config['ADDRESSES_PATH'])
     module_links()
-    
+
 def loadRegisters(modules_path,addresses_path):
     global modules, module_names, register_paths
     modules, module_names , register_paths = loadElmgModules(modules_path,addresses_path)
@@ -63,10 +63,9 @@ def readRegister(name):
         with open(file_path, 'r') as f:
             for line in f:
                 if line.strip():
-                   value = line.strip()
-                   print('register: %s = %s' % (file_path, value))
-                   break
-                print('$$$ register:  %s' %  file_path)
+                    value = line.strip()
+                    print('read register: %s = %s' % (file_path, value))
+                    break
     except (IOError, OSError):
         print('error reading register: %s ' % file_path)
         return '0'
@@ -117,9 +116,9 @@ def index():
 
 
 
-    
+
 @frontend.route('/file/', methods=(['GET']))
-def file():  
+def file():
     return render_template('file.html')
 
 @frontend.route('/submit_file/', methods=(['GET', 'POST']))
@@ -130,7 +129,7 @@ def submit_file():
             save(app.config['DATA_FILE'])
         if  request.form['action'] == 'Restore':
             load(app.config['DATA_FILE'])
-    
+
     return render_template('file.html')
 
 @frontend.route('/module/<string:mod>', methods=(['GET']))
@@ -159,13 +158,13 @@ def validateRegister(register_path, value):
     if register_path in register_paths:
         if float(value) >= float(register_paths[register_path][u'min']) and float(value) <= float(register_paths[register_path][u'max']):
             return True
-        print("Value out of range %s:%s (%s - %s)"%(register_path,value, register_paths[register_path][u'min'], register_paths[register_path][u'max']) ) 
+        print("Value out of range %s:%s (%s - %s)"%(register_path,value, register_paths[register_path][u'min'], register_paths[register_path][u'max']) )
     return False
-     
-    
+
+
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
 def submit(mod):
-    pp.pprint(request.form)
+#     pp.pprint(request.form)
     if request.method == 'POST' and request.form['submit'] == 'Submit':
         # write the data to the registers.
         data = request.form
@@ -177,9 +176,6 @@ def submit(mod):
             if isCacheRegister(register_path):
                 commitRegisters(register_path)
     return module(mod)
-
-
-
 
 def createTempFilesytem():
     for path, reg in register_paths.iteritems():
@@ -194,7 +190,7 @@ def createTempFilesytem():
             with open(file_path, 'w+') as f:
                 print ('Creating temp register path %s with default value of %s' % (file_path, reg['value']))
                 f.write(str(reg['value']))
-                
+
 
 def save(file_path = "/tmp/data.elmg"):
     values = {}
@@ -217,7 +213,7 @@ def load(file_path = "/tmp/data.elmg"):
     for path, value in values.iteritems():
         if  isCacheRegister(path):
             writeRegister(path,value)
-            
+
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
     loadRegisters("modules.json","addresses.csv")

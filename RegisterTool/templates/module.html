@@ -2,11 +2,11 @@
 {% block content %}
 
     <h1>{{ title }} </h1>
-     
+
  <h1> Module: {{ module.name }}</h1>
  <div id="registerForm" class="table-editable">
     <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}"  >
-    
+
     {{ form.csrf_token }}
     <table class="table table-bordered">
     <thead>
@@ -32,15 +32,15 @@
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
-                <input 
-                		name="{{register.path}}" 
-                		id="{{register.id}}" 
-                		required 
-                		type="number" 
-                		value="{{register.value}}" 
-                		step= "{{register.step}}" 
-                		min="{{register.min}}" 
-                		max="{{register.max}}" 
+                <input
+                		name="{{register.path}}"
+                		id="{{register.id}}"
+                		required
+                		type="number"
+                		value="{{register.value}}"
+                		step= "{{register.step}}"
+                		min="{{register.min}}"
+                		max="{{register.max}}"
                 		/>
             {% endif %}
         </td>
@@ -52,11 +52,13 @@
       {% endif %}
     {% endfor %}
     </tbody>
-    </table> 
-    <input type="submit" name="submit" value="Submit"  formnovalidate/>  <input type="reset" name="submit" value="Refresh" formnovalidate />
+    </table>
+    <input type="submit" name="submit" value="Submit"  formnovalidate/>
+    <input type="submit" name="submit" value="Read"  formnovalidate/>
+    <input type="reset"  name="submit" value="Cancel" formnovalidate />
     </form>
-    </div> 
-    
+    </div>
+
 
 
 <script>
@@ -74,13 +76,13 @@ function validateForm(event) {
 		 		form_valid = false;
 		 		alert(" {{ register.name}}: Range error  ( {{ register.min }} to {{ register.max }} ) ")
 		 		}
-		 
+
 	     {% endif %}
      {% endfor %}
      return form_valid;
 }
 </script>
-    
+
 
 {% endblock %}
 
