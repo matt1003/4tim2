@@ -11,7 +11,7 @@ import pprint
 import os
 import json
 import time
-
+from register import Register
 
 from elmgModules import loadElmgModules
 
@@ -36,6 +36,7 @@ def setApp(app_):
     print ("Setting App")
     global app
     app = app_
+    Register.setProcDir(getProcDir())
 
 
 def initModuleRegisters():
@@ -47,49 +48,11 @@ def loadRegisters(modules_path,addresses_path):
     modules, module_names , register_paths = loadElmgModules(modules_path,addresses_path)
 
 def getProcDir():
+    global app
     if  app and 'PROC_DIR' in app.config:
         return app.config['PROC_DIR']
     return "/tmp"
 
-
-def readRegister(name):
-    if isCacheRegister(name):
-        # we can't read the cache registers, they are write only.
-        print('cache register: %s ' % name)
-        return 0
-    file_path = getProcDir() + '/' + name
-    value = '0.0'
-    try:
-        with open(file_path, 'r') as f:
-            for line in f:
-                if line.strip():
-                    value = line.strip()
-                    print('read register: %s = %s' % (file_path, value))
-                    break
-    except (IOError, OSError):
-        print('error reading register: %s ' % file_path)
-        return '0'
-    return value
-
-def writeRegister(name, value=0):
-    if isCacheRegister(name):
-        # we can't write the cache registers like this we must use, commitRegisters()
-        commitRegisters (name)
-    if validateRegister(name,value):
-        file_path = getProcDir() + '/' + name
-        try:
-            print("write %s %s" % (file_path, value))
-            with open(file_path, 'w') as f:
-                f.write(str(value))
-        except (IOError, OSError) as e:
-            print("ERROR: Failed to write to %s %s" % (file_path, e))
-            pass
-
-def commitRegisters(name):
-    file_path = getProcDir() + '/' + name
-    print("commitRegisters %s" % (file_path))
-    with open(file_path, 'w') as f:
-        f.write(str(1))
 
 
 def module_links():
@@ -138,28 +101,13 @@ def module(mod):
     module_data = getModule(mod)
 
     for reg in module_data['registers']:
-        reg['value'] = readRegister(reg['path'])
+        reg.update()
 
     return render_template('module.html',
                            module={'name':module_data['name']},
                            registers=module_data['registers'], form=form)
 
-def isCacheRegister(register_path):
-    if register_path in register_paths:
-        return register_paths[register_path][u'cache_register']
-    return False
 
-def isReadOnlyRegister(register_path):
-    if register_path in register_paths:
-        return register_paths[register_path][u'read_only']
-    return True
-
-def validateRegister(register_path, value):
-    if register_path in register_paths:
-        if float(value) >= float(register_paths[register_path][u'min']) and float(value) <= float(register_paths[register_path][u'max']):
-            return True
-        print("Value out of range %s:%s (%s - %s)"%(register_path,value, register_paths[register_path][u'min'], register_paths[register_path][u'max']) )
-    return False
 
 
 @frontend.route('/submit/<string:mod>', methods=(['GET', 'POST']))
@@ -169,12 +117,12 @@ def submit(mod):
         # write the data to the registers.
         data = request.form
         for register_path in data:
-            if not isCacheRegister(register_path):
-                writeRegister(register_path, data[register_path])
+            if register_path in register_paths:
+                register_paths[register_path].write(data[register_path])
         # now write to the cache commit registers.
         for register_path in data:
-            if isCacheRegister(register_path):
-                commitRegisters(register_path)
+            if register_path in register_paths:
+                register_paths[register_path].commit()
     return module(mod)
 
 def createTempFilesytem():
@@ -198,7 +146,7 @@ def save(file_path = "/tmp/data.elmg"):
     values[u'raw_time']=  time.time()
     values[u'date']=time.asctime( time.localtime(time.time()) )
     for path, reg in getRegisterPaths().iteritems():
-        values[path] = readRegister(path)
+        values[path] = reg.update()
     with open(file_path, 'w') as outfile:
         json.dump(values, outfile,  sort_keys=True,indent=4, separators=(',', ': '))
 
@@ -206,13 +154,13 @@ def load(file_path = "/tmp/data.elmg"):
     json_data = open(file_path)
     values = json.load(json_data)
     for path, value in values.iteritems():
-        if not isReadOnlyRegister(path) and not isCacheRegister(path):
-            writeRegister(path,value)
+        if path in register_paths:
+            register_paths[path].write(value)
 
     #Write all the cache registers.
     for path, value in values.iteritems():
-        if  isCacheRegister(path):
-            writeRegister(path,value)
+        if path in register_paths:
+            register_paths[path].commit()
 
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)

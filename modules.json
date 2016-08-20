@@ -469,7 +469,7 @@
     "Description": "Counts per revolution of the installed encoder",
     "Min": 150,
     "Max": 50000,
-    "Default": 0,
+    "Default": 4096,
     "Step": 10,
     "Units": "counts"
   },
