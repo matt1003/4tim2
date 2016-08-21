@@ -5,13 +5,13 @@
 # You can find out more about blueprints at
 # http://flask.pocoo.org/docs/blueprints/
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, flash, send_from_directory
 from flask_nav.elements import Navbar, View, Subgroup, Link
 import pprint
 import os
-import json
-import time
+
 from register import Register
+from configuration import Configuration
 
 from elmgModules import loadElmgModules
 
@@ -25,6 +25,7 @@ pp = pprint.PrettyPrinter(indent=4)
 modules = None
 module_names = None
 register_paths = None
+configuration = None
 
 
 def getRegisterPaths():
@@ -44,8 +45,9 @@ def initModuleRegisters():
     module_links()
 
 def loadRegisters(modules_path,addresses_path):
-    global modules, module_names, register_paths
+    global modules, module_names, register_paths, configuration
     modules, module_names , register_paths = loadElmgModules(modules_path,addresses_path)
+    configuration = Configuration(register_paths)
 
 def getProcDir():
     global app
@@ -62,7 +64,7 @@ def module_links():
     nav.register_element('frontend_top',
                          Navbar(
                                 View('Home', '.index'),
-                                View('File', 'frontend.file'),
+                                View('File', 'frontend.fileForm'),
                                 Subgroup('Modules', *links)
                                 )
                          )
@@ -78,22 +80,48 @@ def index():
     return render_template('index.html')
 
 
+@frontend.route('/tmp/<path:filename>')
+def download_file(filename):
+    pp.pprint(filename)
+    return send_from_directory(app.config['DATA_FILE_PATH'],
+                               filename, as_attachment=True)
 
 
-@frontend.route('/file/', methods=(['GET']))
-def file():
-    return render_template('file.html')
+@frontend.route('/fileForm/', methods=(['GET']))
+def fileForm():
+    f = configuration.getDataFile(app.config['DATA_FILE_PATH'],app.config['DATA_FILE_EXTENSION'])
+    return render_template('file.html', files=f)
 
 @frontend.route('/submit_file/', methods=(['GET', 'POST']))
 def submit_file():
     pp.pprint(request.form)
     if request.method == 'POST':
         if  request.form['action'] == 'Save':
-            save(app.config['DATA_FILE'])
+            f = configuration.save(app.config['DATA_FILE_PATH'],app.config['DATA_FILE_EXTENSION'])
+            if f == "":
+                flash('Configuration {} Saved'.format(f))
+            else:
+                flash('Failed to save configuration {}'.format(f))
+                  
         if  request.form['action'] == 'Restore':
-            load(app.config['DATA_FILE'])
+            if 'files' in request.form.keys():
+                if configuration.load(app.config['DATA_FILE_PATH'] + "/" + request.form['files']):
+                    flash('Configuration {} restored'.format(request.form['files']))
+                else:
+                    flash('Failed to restore configuration {}'.format(request.form['files']))
+            else:
+                flash('No file selected ')
+                
+        if  request.form['action'] == 'Delete':
+            if 'files' in request.form.keys():
+                if configuration.delete(app.config['DATA_FILE_PATH'] + "/" + request.form['files']):
+                    flash('Configuration {} Deleted'.format(request.form['files']))
+                else:
+                    flash('Failed to delete configuration {}'.format(request.form['files']))
+            else:
+                flash('No file selected ')
 
-    return render_template('file.html')
+    return fileForm()
 
 @frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
@@ -140,27 +168,7 @@ def createTempFilesytem():
                 f.write(str(reg['value']))
 
 
-def save(file_path = "/tmp/data.elmg"):
-    values = {}
-    values[u'version']="1.0.0"
-    values[u'raw_time']=  time.time()
-    values[u'date']=time.asctime( time.localtime(time.time()) )
-    for path, reg in getRegisterPaths().iteritems():
-        values[path] = reg.update()
-    with open(file_path, 'w') as outfile:
-        json.dump(values, outfile,  sort_keys=True,indent=4, separators=(',', ': '))
 
-def load(file_path = "/tmp/data.elmg"):
-    json_data = open(file_path)
-    values = json.load(json_data)
-    for path, value in values.iteritems():
-        if path in register_paths:
-            register_paths[path].write(value)
-
-    #Write all the cache registers.
-    for path, value in values.iteritems():
-        if path in register_paths:
-            register_paths[path].commit()
 
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)

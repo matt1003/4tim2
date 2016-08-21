@@ -8,4 +8,6 @@ SECRET_KEY = 'devkey'
 PROC_DIR="/tmp"
 MODULES_PATH="modules.json"
 ADDRESSES_PATH="addresses.csv"
+DATA_FILE_PATH="/tmp"
+DATA_FILE_EXTENSION="elmg"
 DATA_FILE="/tmp/data.elmg"

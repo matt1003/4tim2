@@ -1,13 +1,26 @@
 {% extends "base.html" %} {% block content %}
 
+
 <div id="fileForm" class="table-editable">
-	<form method="post" action="{{ url_for('frontend.submit_file' ) }}">
-	
+<form method="post" action="{{ url_for('frontend.submit_file' ) }}">
+  {% for file in files %}
+  	<input type="radio" name="files" id="{{ file[1] }}"  value="{{ file[1] }}" > <a href="http:/tmp/{{ file[1] }}"> {{ file[1] }}</a> <br>
+  {% endfor %}
+  <br>
 		<input type="submit" name="action" value="Save" />
 		<input type="submit" name="action" value="Restore" />
+		<input type="submit" name="action" value="Delete" />
 	</form>
 </div>
-
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 {% endblock %}
 
 
