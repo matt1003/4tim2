@@ -134,7 +134,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@frontend.route('/upload', methods=['GET', 'POST'])
 def upload_file():
 #     if request.method == 'POST':    
     # check if the post request has the file part
@@ -149,17 +148,20 @@ def upload_file():
         return fileForm()
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['DATA_FILE_PATH'], filename))
+        f = file.save(os.path.join(app.config['DATA_FILE_PATH'], filename))
+        if f =='':
+            flash(' Upload failed: {}'.format(file.filename))
+        else:
+            flash(' Upload success: {}'.format(file.filename))
         return redirect(url_for('frontend.fileForm', filename=filename))
     else:
         print('Upload unsupported')
         flash('Missing or unsupported file type: {}'.format(file.filename))
     return fileForm()
             
-@frontend.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['DATA_FILE_PATH'],
-                               filename)
+# @frontend.route('/uploads/<filename>')
+# def uploaded_file(filename):
+#     return send_from_directory(app.config['DATA_FILE_PATH'], filename)
     
 @frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
