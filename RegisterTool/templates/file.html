@@ -1,26 +1,38 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} 
+{% block content %}
 
-
-<div id="fileForm" class="table-editable">
-<form method="post" action="{{ url_for('frontend.submit_file' ) }}">
-  {% for file in files %}
-  	<input type="radio" name="files" id="{{ file[1] }}"  value="{{ file[1] }}" > <a href="http:/tmp/{{ file[1] }}"> {{ file[1] }}</a> <br>
-  {% endfor %}
-  <br>
-		<input type="submit" name="action" value="Save" />
-		<input type="submit" name="action" value="Restore" />
-		<input type="submit" name="action" value="Delete" />
-	</form>
+<div>
+	<div id="fileForm" class="table-editable">
+		<form method="post" action="{{ url_for('frontend.submit_file' ) }}"	enctype=multipart/form-data>
+			{% for file in files %} 
+			<input type="radio" name="files" id="{{ file[1] }}" value="{{ file[1] }}" > 
+				<a href="http:/tmp/{{ file[1] }}"> {{ file[1] }} </a> <br> 
+			{% endfor %} 
+			<br> 
+			<input type="submit" name="action" value="Save" />
+			<input type="submit" name="action" value="Restore" /> 
+			<input type="submit" name="action" value="Delete" />
+		</form>
+	</div>
+	<hr>
+	<div>
+		<H2>Configuration Upload</H2>
+		<form method="post" action="{{ url_for('frontend.submit_file' ) }}"  enctype=multipart/form-data>
+			<p>
+				<input type=file name=file> <input type=submit value=Upload>
+		</form>
+	</div>
 </div>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
+
+{% with messages = get_flashed_messages() %} 
+	{% if messages %}
+	<ul class=flashes>
+		{% for message in messages %}
+			<li>{{ message }}</li> 
+		{% endfor %}
+	</ul>
+	{% endif %} 
+{% endwith %} 
 {% endblock %}
 
 

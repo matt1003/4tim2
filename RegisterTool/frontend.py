@@ -5,8 +5,9 @@
 # You can find out more about blueprints at
 # http://flask.pocoo.org/docs/blueprints/
 
-from flask import Blueprint, render_template, request, flash, send_from_directory
+from flask import Blueprint, render_template, request, flash, send_from_directory, redirect, url_for
 from flask_nav.elements import Navbar, View, Subgroup, Link
+from werkzeug.utils import secure_filename
 import pprint
 import os
 
@@ -28,6 +29,9 @@ register_paths = None
 configuration = None
 
 
+ALLOWED_EXTENSIONS = set(['elmg'])
+
+
 def getRegisterPaths():
     global register_paths
     return register_paths
@@ -44,9 +48,9 @@ def initModuleRegisters():
     loadRegisters(app.config['MODULES_PATH'], app.config['ADDRESSES_PATH'])
     module_links()
 
-def loadRegisters(modules_path,addresses_path):
+def loadRegisters(modules_path, addresses_path):
     global modules, module_names, register_paths, configuration
-    modules, module_names , register_paths = loadElmgModules(modules_path,addresses_path)
+    modules, module_names , register_paths = loadElmgModules(modules_path, addresses_path)
     configuration = Configuration(register_paths)
 
 def getProcDir():
@@ -89,7 +93,7 @@ def download_file(filename):
 
 @frontend.route('/fileForm/', methods=(['GET']))
 def fileForm():
-    f = configuration.getDataFile(app.config['DATA_FILE_PATH'],app.config['DATA_FILE_EXTENSION'])
+    f = configuration.getDataFile(app.config['DATA_FILE_PATH'], app.config['DATA_FILE_EXTENSION'])
     return render_template('file.html', files=f)
 
 @frontend.route('/submit_file/', methods=(['GET', 'POST']))
@@ -97,7 +101,7 @@ def submit_file():
     pp.pprint(request.form)
     if request.method == 'POST':
         if  request.form['action'] == 'Save':
-            f = configuration.save(app.config['DATA_FILE_PATH'],app.config['DATA_FILE_EXTENSION'])
+            f = configuration.save(app.config['DATA_FILE_PATH'], app.config['DATA_FILE_EXTENSION'])
             if f == "":
                 flash('Configuration {} Saved'.format(f))
             else:
@@ -120,9 +124,43 @@ def submit_file():
                     flash('Failed to delete configuration {}'.format(request.form['files']))
             else:
                 flash('No file selected ')
-
+        if  request.form['action'] == 'Upload':
+            print('Upload')
+            upload_file()
     return fileForm()
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@frontend.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+#     if request.method == 'POST':    
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return  fileForm()
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit a empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return fileForm()
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['DATA_FILE_PATH'], filename))
+        return redirect(url_for('frontend.fileForm', filename=filename))
+    else:
+        print('Upload unsupported')
+        flash('Missing or unsupported file type: {}'.format(file.filename))
+    return fileForm()
+            
+@frontend.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['DATA_FILE_PATH'],
+                               filename)
+    
 @frontend.route('/module/<string:mod>', methods=(['GET']))
 def module(mod):
     form = RegistersForm()
@@ -163,16 +201,19 @@ def createTempFilesytem():
             if not os.path.isdir(directory):
                 raise
         if not os.path.isfile(file_path):
-            with open(file_path, 'w+') as f:
-                print ('Creating temp register path %s with default value of %s' % (file_path, reg['value']))
-                f.write(str(reg['value']))
+            try:
+                with open(file_path, 'w+') as f:
+                    print ('Creating temp register path %s with default value of %s' % (file_path, reg.getValue()))
+                    f.write(str(reg.getValue()))
+            except IOError:
+                pass
 
 
 
 
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    loadRegisters("modules.json","addresses.csv")
+    loadRegisters("modules.json", "addresses.csv")
     createTempFilesytem()
     save('/tmp/data.elmg')
     load('/tmp/data.elmg')
