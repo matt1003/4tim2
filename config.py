@@ -8,6 +8,15 @@ SECRET_KEY = 'devkey'
 PROC_DIR="/tmp"
 MODULES_PATH="modules.json"
 ADDRESSES_PATH="addresses.csv"
-DATA_FILE_PATH="/tmp"
+
+DATA_FILE_PATH="/mnt/emmc"
 DATA_FILE_EXTENSION="elmg"
-DATA_FILE="/tmp/data.elmg"
+DATA_FILE="/mnt/emmc/data.elmg"
+
+START_SCRIPT="/mnt/emmc/go.sh"
+STOP_SCRIPT="/mnt/emmc/stop.sh"
+DTCON_SCRIPT="/mnt/emmc/dtcon.sh"
+DTCOFF_SCRIPT="/mnt/emmc/dtcoff.sh"
+PSNC_SCRIPT="/mnt/emmc/poscont.sh"
+SPDC_SCRIPT="/mnt/emmc/spdcont.sh"
+DLOG_SCRIPT="/mnt/emmc/dloghf.elf -k -n &"

@@ -102,10 +102,10 @@ def submit_file():
     if request.method == 'POST':
         if  request.form['action'] == 'Save':
             f = configuration.save(app.config['DATA_FILE_PATH'], app.config['DATA_FILE_EXTENSION'])
-            if f == "":
+            if f != "":
                 flash('Configuration {} Saved'.format(f))
             else:
-                flash('Failed to save configuration {}'.format(f))
+                flash('Failed to save configuration')
                   
         if  request.form['action'] == 'Restore':
             if 'files' in request.form.keys():
@@ -191,6 +191,23 @@ def submit(mod):
         for register_path in data:
             if register_path in register_paths:
                 register_paths[register_path].commit()
+    if request.method == 'POST' and request.form['submit'] == 'Start Motor':
+        os.system(app.config['START_SCRIPT'])
+    if request.method == 'POST' and request.form['submit'] == 'Stop Motor':
+        os.system(app.config['STOP_SCRIPT'])        
+    if request.method == 'POST' and request.form['submit'] == 'Start Dlog':
+        os.system(app.config['DLOG_SCRIPT'])        
+    if request.method == 'POST' and request.form['submit'] == 'DTC On':
+        os.system(app.config['DTCON_SCRIPT'])                
+    if request.method == 'POST' and request.form['submit'] == 'DTC Off':
+        os.system(app.config['DTCOFF_SCRIPT'])                
+    if request.method == 'POST' and request.form['submit'] == 'Position Control':
+        os.system(app.config['PSNC_SCRIPT'])                
+    if request.method == 'POST' and request.form['submit'] == 'Speed Control':
+        os.system(app.config['SPDC_SCRIPT'])                        
+        
+
+        
     return module(mod)
 
 def createTempFilesytem():

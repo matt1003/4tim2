@@ -7,9 +7,6 @@ from pip._vendor.requests.utils import address_in_network
 from register import Register
 
 
-data_type_map = {u'Integer':u'int',u'Binary':u'bool', 
-                 u'Fixed point string':u'float'
-                 }
 
 
 def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv'):

@@ -1,8 +1,8 @@
 import string
 from operator import isCallable
 class Register(object):
-    data_type_map = {u'Integer':u'int', u'Binary':u'bool',
-                 u'Fixed point string':u'float'
+    data_type_map = {u'Integer':u'int',u'Binary':u'bool',u'Bit':u'bool', 
+                 u'Fixed point string':u'float',u'Float':u'float'
                  }
     proc_dir = "/tmp"
     def __init__(self, sysfs_module_name, register):
