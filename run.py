@@ -10,4 +10,4 @@ if __name__ == "__main__":
     setApp(app)
     if app.config['PROC_DIR'] == '/tmp':
         createTempFilesytem()
-    app.run(debug=1,host='0.0.0.0')
+    app.run(debug=1, host='0.0.0.0')

@@ -36,9 +36,9 @@ def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv
             new_module [u'registers'] = []
             for register in module [u'registers']:
                 if register[u'Sysfs'] != 'N':
-                    mod_name = '{}_{}'.format(module[u'name'],instance)
-                    sysfs_module_name = '{}.{}'.format(string.lower(address_map[mod_name]),type_map[mod_name])
-                    reg= Register(sysfs_module_name,register)
+                    mod_name = '{}_{}'.format(module[u'name'], instance)
+                    sysfs_module_name = '{}.{}'.format(string.lower(address_map[mod_name]), type_map[mod_name])
+                    reg = Register(sysfs_module_name, register)
                     register_paths[reg.getPath()] = reg
                     new_module [u'registers'].append(reg)
             expanded_module_data.append(dict(new_module))  
@@ -56,7 +56,7 @@ def loadElmgModules(modules_path=u'modules.json', addresses_path=u'addresses.csv
     
 if __name__ == '__main__':
     pp = pprint.PrettyPrinter(indent=4)
-    modules, module_names, register_paths = loadElmgModules(u'modules.json',u'addresses.csv')
+    modules, module_names, register_paths = loadElmgModules(u'modules.json', u'addresses.csv')
     pp.pprint(modules)
     pp.pprint(module_names)
     pp.pprint(register_paths)
