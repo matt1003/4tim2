@@ -11,7 +11,10 @@ ADDRESSES_PATH="addresses.csv"
 
 DATA_FILE_PATH="/mnt/emmc"
 DATA_FILE_EXTENSION="elmg"
-DATA_FILE="/mnt/emmc/data.elmg"
+
+LOG_FILE_PATH="/mnt/emmc"
+LOG_FILE_EXTENSION="log"
+
 
 START_SCRIPT="/mnt/emmc/go.sh"
 STOP_SCRIPT="/mnt/emmc/stop.sh"

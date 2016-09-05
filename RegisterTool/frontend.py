@@ -59,8 +59,6 @@ def getProcDir():
         return app.config['PROC_DIR']
     return "/tmp"
 
-
-
 def module_links():
     links = []
     for mod in module_names:
@@ -68,7 +66,9 @@ def module_links():
     nav.register_element('frontend_top',
                          Navbar(
                                 View('Home', '.index'),
-                                View('File', 'frontend.fileForm'),
+                                Subgroup('File',
+                                View('Backup and Restore', 'frontend.fileForm'),
+                                View('Logs', 'frontend.logfileForm')),
                                 Subgroup('Modules', *links)
                                 )
                          )
@@ -84,17 +84,35 @@ def index():
     return render_template('index.html')
 
 
-@frontend.route('/tmp/<path:filename>')
+@frontend.route('/configdir/<path:filename>')
 def download_file(filename):
     pp.pprint(filename)
-    return send_from_directory(app.config['DATA_FILE_PATH'],
+    try:
+        return send_from_directory(app.config['DATA_FILE_PATH'],
                                filename, as_attachment=True)
-
+    except:
+        flash('Download cancelled: {}'.format(request.form['files']))
+    return 
+    
+@frontend.route('/logfiledir/<path:filename>')
+def download_logfile(filename):
+    pp.pprint(filename)
+    try:
+        return send_from_directory(app.config['LOG_FILE_PATH'],
+                               filename, as_attachment=True)
+    except:
+        flash('Download cancelled: {}'.format(request.form['files']))
+    return
 
 @frontend.route('/fileForm/', methods=(['GET']))
 def fileForm():
     f = configuration.getDataFile(app.config['DATA_FILE_PATH'], app.config['DATA_FILE_EXTENSION'])
     return render_template('file.html', files=f)
+
+@frontend.route('/logfileForm/', methods=(['GET']))
+def logfileForm():
+    f = configuration.getDataFile(app.config['LOG_FILE_PATH'], app.config['LOG_FILE_EXTENSION'])
+    return render_template('logfiles.html', files=f)
 
 @frontend.route('/submit_file/', methods=(['GET', 'POST']))
 def submit_file():
@@ -108,8 +126,8 @@ def submit_file():
                 flash('Failed to save configuration')
                   
         if  request.form['action'] == 'Restore':
-            if 'files' in request.form.keys():
-                if configuration.load(app.config['DATA_FILE_PATH'] + "/" + request.form['files']):
+            if 'files' in request.form.keys() and request.form['files']:
+                if configuration.load(app.config['DATA_FILE_PATH'] + "/" + request.form['files']) :
                     flash('Configuration {} restored'.format(request.form['files']))
                 else:
                     flash('Failed to restore configuration {}'.format(request.form['files']))
@@ -117,7 +135,7 @@ def submit_file():
                 flash('No file selected ')
                 
         if  request.form['action'] == 'Delete':
-            if 'files' in request.form.keys():
+            if 'files' in request.form.keys() and request.form['files']:
                 if configuration.delete(app.config['DATA_FILE_PATH'] + "/" + request.form['files']):
                     flash('Configuration {} Deleted'.format(request.form['files']))
                 else:
@@ -128,6 +146,23 @@ def submit_file():
             print('Upload')
             upload_file()
     return fileForm()
+
+
+@frontend.route('/submit_logfile/', methods=(['GET', 'POST']))
+def submit_logfile():
+    pp.pprint(request.form)
+    if request.method == 'POST':
+                     
+        if  request.form['action'] == 'Delete':
+            if 'files' in request.form.keys() and request.form['files']:
+                if configuration.delete(app.config['LOG_FILE_PATH'] + "/" + request.form['files']):
+                    flash('Configuration {} Deleted'.format(request.form['files']))
+                else:
+                    flash('Failed to delete configuration {}'.format(request.form['files']))
+            else:
+                flash('No file selected ')
+       
+    return logfileForm()
 
 
 def allowed_file(filename):
@@ -149,7 +184,7 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         f = file.save(os.path.join(app.config['DATA_FILE_PATH'], filename))
-        if f =='':
+        if f == '':
             flash(' Upload failed: {}'.format(file.filename))
         else:
             flash(' Upload success: {}'.format(file.filename))
