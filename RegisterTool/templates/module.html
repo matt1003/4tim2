@@ -4,13 +4,14 @@
     <h1>{{ title }} </h1>
      
  <h1> Module: {{ module.name }}</h1>
- <div id="table" class="table-editable">
-    <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}">
-                    {{ form.csrf_token }}
+ <div id="registerForm" class="table-editable">
+    <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}"  >
+    
+    {{ form.csrf_token }}
     <table class="table table-bordered">
     <thead>
     <tr>
-    <th> index  </td>
+    <th>Index</td>
     <th>Name</th>
     <th>Value</th>
     <th>Units</th>
@@ -31,28 +32,55 @@
             {% if register.read_only %}
                 {{ register.value}}
             {% else %}
-                <input name="{{register.path}}" type="number" value="{{ register.value }}" min="{{ register.min }}" max="{{ register.max }}" step= "{{ register.step }}" > 
+                <input 
+                		name="{{register.path}}" 
+                		id="{{register.id}}" 
+                		required 
+                		type="number" 
+                		value="{{register.value}}" 
+                		step= "{{register.step}}" 
+                		min="{{register.min}}" 
+                		max="{{register.max}}" 
+                		/>
             {% endif %}
-
         </td>
         <td>{{ register.units}} </td>
         <td>{{ register.min}} </td>
         <td>{{ register.max}} </td>
-        <td>{{ register.notes}}  {{register.read_only}}</td>
+        <td>{{ register.notes}}</td>
     	</tr>
-            {% endif %}
-
-
+      {% endif %}
     {% endfor %}
     </tbody>
     </table> 
-    <input type="submit" value="Submit" />
-       <form method="get" action="{{ url_for('frontend.module', mod=module.name ) }}">
-    <input type="submit" value="Refresh" />
-</form>
-    </form>   
-   
+    <input type="submit" name="submit" value="Submit"  formnovalidate/>  <input type="reset" name="submit" value="Refresh" formnovalidate />
+    </form>
     </div> 
+    
+
+
+<script>
+var form = document.getElementById("registerForm");
+form.noValidate = true;
+form.onsubmit = validateForm;
+
+function validateForm(event) {
+	var form_valid = true;
+	 {% for register in registers %}
+		 {% if not register.cache_register and not register.read_only %}
+		 	if ((document.getElementById('{{ register.id }}').validity.rangeUnderflow )
+					|| (document.getElementById('{{ register.id }}').validity.rangeOverflow ))
+		 		{
+		 		form_valid = false;
+		 		alert(" {{ register.name}}: Range error  ( {{ register.min }} to {{ register.max }} ) ")
+		 		}
+		 
+	     {% endif %}
+     {% endfor %}
+     return form_valid;
+}
+</script>
+    
 
 {% endblock %}
 
