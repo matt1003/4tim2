@@ -5,7 +5,7 @@
 #       default, rather the app should fail if it is missing. For the sample
 #       application, one is provided for convenience.
 SECRET_KEY = 'devkey'
-PROC_DIR = "/tmp"
+PROC_DIR = "/sys/devices/soc0/amba"
 MODULES_PATH = "modules.json"
 ADDRESSES_PATH = "addresses.csv"
 

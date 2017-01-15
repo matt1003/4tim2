@@ -26,8 +26,9 @@ class Register(object):
             self.data_type = u'float'
     
     @staticmethod        
-    def setProcDir(dir):
-        proc_dir = dir;
+    def setProcDir(dir):        
+        Register.proc_dir = dir;
+        
             
     def getPath(self):
         return self.path
