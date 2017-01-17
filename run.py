@@ -1,6 +1,5 @@
-from RegisterTool.createApp import createApp 
-from RegisterTool.frontend import  setApp, createTempFilesytem
-
+from RegisterTool.createApp import createApp
+from RegisterTool.frontend import setApp, createTempFilesytem
 
 if __name__ == "__main__":
     # create an app instance

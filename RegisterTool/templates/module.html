@@ -1,72 +1,71 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <h1>{{ title }} </h1>
+<h1>{{ title }} </h1>
 
- <h1> Module: {{ module.name }}</h1>
- <div id="registerForm" class="table-editable">
-    <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}"  >
+<h1> Module: {{ module.name }}</h1>
+<div id="registerForm" class="table-editable">
+    <form method="post" action="{{ url_for('frontend.submit', mod=module.name ) }}">
 
-    {{ form.csrf_token }}
-    <table class="table table-bordered">
-    <thead>
-    <tr>
-    <th>Index</td>
-    <th>Name</th>
-    <th>Value</th>
-    <th>Units</th>
-    <th>Min</th>
-    <th>Max</th>
-    <th>Notes</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for register in registers %}
-      {% if register.cache_register  %}
-       <input name="{{register.path}}" type="hidden" value="{{ register.value }}">
-      {% else %}
-    	<tr>
-        <td> {{ loop.index }} </td>
-        <td>{{ register.name }} </td>
-        <td >
-            {% if register.read_only %}
-                {{ register.value}}
+        {{ form.csrf_token }}
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Index
+                </td>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Units</th>
+                <th>Min</th>
+                <th>Max</th>
+                <th>Notes</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for register in registers %}
+            {% if register.cache_register %}
+            <input name="{{register.path}}" type="hidden" value="{{ register.value }}">
             {% else %}
-                <input
-                		name="{{register.path}}"
-                		id="{{register.id}}"
-                		required
-                		type="number"
-                		value="{{register.value}}"
-                		step= "{{register.step}}"
-                		min="{{register.min}}"
-                		max="{{register.max}}"
-                		/>
+            <tr>
+                <td> {{ loop.index }}</td>
+                <td>{{ register.name }}</td>
+                <td>
+                    {% if register.read_only %}
+                    {{ register.value}}
+                    {% else %}
+                    <input
+                            name="{{register.path}}"
+                            id="{{register.id}}"
+                            required
+                            type="number"
+                            value="{{register.value}}"
+                            step="{{register.step}}"
+                            min="{{register.min}}"
+                            max="{{register.max}}"
+                    />
+                    {% endif %}
+                </td>
+                <td>{{ register.units}}</td>
+                <td>{{ register.min}}</td>
+                <td>{{ register.max}}</td>
+                <td>{{ register.notes}}</td>
+            </tr>
             {% endif %}
-        </td>
-        <td>{{ register.units}} </td>
-        <td>{{ register.min}} </td>
-        <td>{{ register.max}} </td>
-        <td>{{ register.notes}}</td>
-    	</tr>
-      {% endif %}
-    {% endfor %}
-    </tbody>
-    </table>
-    <input type="submit" name="submit" value="Submit"  formnovalidate/>
-    <input type="submit" name="submit" value="Read"  formnovalidate/>
-    <input type="reset"  name="submit" value="Cancel" formnovalidate />
-    <input type="submit" name="submit" value="Start Motor"  formnovalidate/>
-    <input type="submit" name="submit" value="Stop Motor"  formnovalidate/>   
-    <input type="submit" name="submit" value="Start Dlog"  formnovalidate/>   
-    <input type="submit" name="submit" value="DTC On"  formnovalidate/>   
-    <input type="submit" name="submit" value="DTC Off"  formnovalidate/>   
-    
-    
+            {% endfor %}
+            </tbody>
+        </table>
+        <input type="submit" name="submit" value="Submit" formnovalidate/>
+        <input type="submit" name="submit" value="Read" formnovalidate/>
+        <input type="reset" name="submit" value="Cancel" formnovalidate/>
+        <input type="submit" name="submit" value="Start Motor" formnovalidate/>
+        <input type="submit" name="submit" value="Stop Motor" formnovalidate/>
+        <input type="submit" name="submit" value="Start Dlog" formnovalidate/>
+        <input type="submit" name="submit" value="DTC On" formnovalidate/>
+        <input type="submit" name="submit" value="DTC Off" formnovalidate/>
+
 
     </form>
-    </div>
-
+</div>
 
 
 <script>
@@ -89,6 +88,7 @@ function validateForm(event) {
      {% endfor %}
      return form_valid;
 }
+
 </script>
 
 

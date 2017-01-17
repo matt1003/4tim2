@@ -13,12 +13,13 @@
 # source.
 
 
-from flask import Flask , session
-from flask_appconfig import AppConfig
+from flask import Flask
+
 from flask_bootstrap import Bootstrap
 
-from nav import nav
 from frontend import frontend, setApp, initModuleRegisters
+from nav import nav
+
 
 def createApp(configfile=None):
     # We are using the "Application Factory"-pattern here, which is described
@@ -27,30 +28,27 @@ def createApp(configfile=None):
 
     app = Flask(__name__)
 
-
     # Install our Bootstrap extensioappappn
     Bootstrap(app)
-    
-    
 
     # Our application uses blueprints as well; these go well with the
     # application factory. We already imported the blueprint, now we just need
     # to register it:
     app.register_blueprint(frontend)
-    
+
     app.config.from_object('config')
 
     # Because we're security-conscious developers, we also hard-code disabling
     # the CDN support (this might become a default in later versions):
     app.config['BOOTSTRAP_SERVE_LOCAL'] = True
-    
+
     setApp(app)
     initModuleRegisters()
-
 
     # We initialize the navigation as well
     nav.init_app(app)
     return app
+
 
 if __name__ == "__main__":
     # create an app instance
@@ -60,4 +58,3 @@ if __name__ == "__main__":
     setApp(app)
 
     app.run(debug=True)
-

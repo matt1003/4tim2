@@ -1,12 +1,12 @@
 {# ``base.html`` is the template all our other templates derive from. While
-   Flask-Bootstrap ships with its own base, it is good form to create a custom
-   one for our app, as it allows customizing some aspects.
+Flask-Bootstrap ships with its own base, it is good form to create a custom
+one for our app, as it allows customizing some aspects.
 
-   Deriving from bootstap/base.html gives us a basic page scaffoling.
+Deriving from bootstap/base.html gives us a basic page scaffoling.
 
-   You can find additional information about template inheritance at
+You can find additional information about template inheritance at
 
-   http://jinja.pocoo.org/docs/templates/#template-inheritance
+http://jinja.pocoo.org/docs/templates/#template-inheritance
 #}
 {%- extends "bootstrap/base.html" %}
 
@@ -16,7 +16,7 @@
 {% import "bootstrap/fixes.html" as fixes %}
 
 {# Inside the head block, we apply these. To not replace the header,
-   ``super()`` is used: #}
+``super()`` is used: #}
 {% block head %}
 {{super()}}
 
@@ -24,13 +24,13 @@
 {%- endblock %}
 
 {# Adding our own CSS files is also done here. Check the documentation at
-   http://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks
-   for an overview. #}
+http://pythonhosted.org/Flask-Bootstrap/basic-usage.html#available-blocks
+for an overview. #}
 {% block styles -%}
-    {{super()}}  {# do not forget to call super or Bootstrap's own stylesheets
-                    will disappear! #}
-    <link rel="stylesheet" type="text/css"
-          href="{{url_for('static', filename='sample-app.css')}}">
+{{super()}}  {# do not forget to call super or Bootstrap's own stylesheets
+will disappear! #}
+<link rel="stylesheet" type="text/css"
+      href="{{url_for('static', filename='sample-app.css')}}">
 {% endblock %}
 
 {# Navigation #}
@@ -39,11 +39,12 @@
 {% endblock %}
 
 {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
+{% if messages %}
+<ul class=flashes>
     {% for message in messages %}
-      <li>{{ message }}</li>nav
+    <li>{{ message }}</li>
+    nav
     {% endfor %}
-    </ul>
-  {% endif %}
+</ul>
+{% endif %}
 {% endwith %}

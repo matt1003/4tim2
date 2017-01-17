@@ -15,7 +15,6 @@ DATA_FILE_EXTENSION = "elmg"
 LOG_FILE_PATH = "/mnt/emmc"
 LOG_FILE_EXTENSION = "log"
 
-
 START_SCRIPT = "/mnt/emmc/go.sh"
 STOP_SCRIPT = "/mnt/emmc/stop.sh"
 DTCON_SCRIPT = "/mnt/emmc/dtcon.sh"

@@ -1,17 +1,20 @@
 import string
-from operator import isCallable
+
+
 class Register(object):
-    data_type_map = {u'Integer':u'int', u'Binary':u'bool', u'Bit':u'bool',
-                 u'Fixed point string':u'float',u'Float':u'float'
-                 }
+    data_type_map = {u'Integer': u'int', u'Binary': u'bool', u'Bit': u'bool',
+                     u'Fixed point string': u'float', u'Float': u'float'
+                     }
     proc_dir = "/tmp"
+
     def __init__(self, sysfs_module_name, register):
         self.name = register[u'English Name']
         self.path = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Sysfs file name']))
-        if register[u'Cache write sysfs register'] :
-            self.cache_write_register = '{}/{}'.format(sysfs_module_name, string.lower(register[u'Cache write sysfs register']))
+        if register[u'Cache write sysfs register']:
+            self.cache_write_register = '{}/{}'.format(sysfs_module_name,
+                                                       string.lower(register[u'Cache write sysfs register']))
         else:
-            self.cache_write_register = '' 
+            self.cache_write_register = ''
         self.cache_register = False
         self.min = float(register[u'Min'])
         self.max = float(register[u'Max'])
@@ -24,40 +27,39 @@ class Register(object):
             self.data_type = Register.data_type_map[register[u'Sysfs Format']]
         else:
             self.data_type = u'float'
-    
-    @staticmethod        
-    def setProcDir(dir):        
+
+    @staticmethod
+    def setProcDir(dir):
         Register.proc_dir = dir;
-        
-            
+
     def getPath(self):
         return self.path
-    
+
     def getCacheWriteRegister(self):
         return self.cache_write_register
-    
+
     def setCacheRegister(self, value):
         self.cache_register = value
-        return 
-    
+        return
+
     def isCacheRegister(self):
         return self.cache_register
-    
+
     def hasCacheRegister(self):
         return not self.getCacheWriteRegister() == ""
-    
+
     def isReadOnly(self):
         return self.read_only
-    
+
     def validateLimits(self, value):
         if float(value) >= float(self.min) and float(value) <= float(self.max):
             return True
-        print("Value out of range %s:%s (%s - %s)"%(self.path, value, self.min, self.max) )
+        print("Value out of range %s:%s (%s - %s)" % (self.path, value, self.min, self.max))
         return False
-    
+
     def getValue(self):
         return self.value
-    
+
     def update(self):
         if self.isCacheRegister():
             # we can't read the cache registers, they are write only.
@@ -77,7 +79,7 @@ class Register(object):
             return '0'
         self.value = value;
         return self.getValue()
-    
+
     def write(self, value=0):
         if self.isReadOnly():
             return
@@ -85,7 +87,7 @@ class Register(object):
             return
         if not self.validateLimits(value):
             return
-        file_path =  Register.proc_dir + '/' + self.path
+        file_path = Register.proc_dir + '/' + self.path
         try:
             print("write %s %s" % (file_path, value))
             with open(file_path, 'w') as f:
@@ -93,7 +95,7 @@ class Register(object):
         except (IOError, OSError) as e:
             print("ERROR: Failed to write to %s %s" % (file_path, e))
             pass
-            
+
     def commit(self):
         if self.isCacheRegister():
             file_path = Register.proc_dir + '/' + self.path
