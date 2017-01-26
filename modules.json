@@ -1,7 +1,7 @@
 [
   {
     "name": "ABTODQ_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -121,7 +121,7 @@
   },
   {
     "name": "PIWARW_AXI",
-    "instances": 4,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -355,7 +355,7 @@
   },
   {
     "name": "ENCRES_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -551,7 +551,7 @@
   },
   {
     "name": "DQTOAB_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "Register": "Config",
@@ -690,7 +690,7 @@
   },
   {
     "name": "AD8330_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -1038,7 +1038,7 @@
   },
   {
     "name": "CC3PSEQC_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -1291,7 +1291,7 @@
   },
   {
     "name": "FAULTED_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -1468,7 +1468,7 @@
   },
   {
     "name": "PMSMSEQC_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -1892,7 +1892,7 @@
   },
   {
     "name": "SELECTOR_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -2145,7 +2145,7 @@
   },
   {
     "name": "SPOPLL_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
@@ -2436,7 +2436,7 @@
   },
   {
     "name": "SV3PWM_AXI",
-    "instances": 1,
+    "instances": 0,
     "registers": [
       {
         "AXI Register Name": "Config",
