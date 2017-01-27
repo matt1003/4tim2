@@ -66,7 +66,12 @@ json_count = defaultdict(lambda:0)
 with open(dts_path, 'r') as dts_file:
   dts_src = dts_file.read()
 
-for match in re.findall(dts_regexp, dts_src):
+match_list = re.findall(dts_regexp, dts_src)
+if not match_list:
+  print "error: unable to find any module definitions in {0}".format(dts_path)
+  exit(1)
+
+for match in match_list:
   name = match[0] ; module = match[1] ; address = match[2]
   entry = "{0},{1},{2}".format(address.upper(), name, module)
   csv_entries.append(entry)
