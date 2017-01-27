@@ -87,6 +87,9 @@ with open(csv_path, 'w') as csv_file:
 with open(json_path, 'r') as json_file:
   json_src = json.load(json_file, object_pairs_hook=OrderedDict)
 
+for json_mod in json_src:
+  json_mod['instances'] = 0
+
 for module in json_count:
   def each_json_mod(module):
     for json_mod in json_src:
