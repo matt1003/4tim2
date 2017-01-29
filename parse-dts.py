@@ -68,8 +68,7 @@ with open(dts_path, 'r') as dts_file:
 
 match_list = re.findall(dts_regexp, dts_src)
 if not match_list:
-  print "error: unable to find any module definitions in {0}".format(dts_path)
-  exit(1)
+  print "warning: unable to find any module definitions in {0}".format(dts_path)
 
 for match in match_list:
   name = match[0] ; module = match[1] ; address = match[2]
